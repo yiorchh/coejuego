@@ -88,6 +88,7 @@ export class GameManager {
     // La vida se restaura solamente al iniciar toda la campaña.
     this.health.reset();
     this.potions.reset();
+    this.revives.resetCampaign();
     this.enterLaboratory();
   }
 
@@ -101,8 +102,9 @@ export class GameManager {
 
     this.questionIndex = 0;
 
-    // Los tres intentos sí se recuperan al comenzar cada laboratorio.
-    this.revives.resetForLaboratory({
+    // La dificultad puede aumentar, pero los intentos restantes
+    // se conservan durante toda la campaña.
+    this.revives.configureForLaboratory({
       laboratoryIndex: this.laboratoryIndex,
       difficulty: this.config.laboratoryDifficulty
     });
@@ -127,7 +129,9 @@ export class GameManager {
           Vida actual: <strong>${this.health.health} HP</strong>.
           No se restaurará al pasar al siguiente laboratorio.
         </p>
-        <p>Intentos de reanimación restaurados: <strong>3</strong>.</p>
+        <p>Intentos de reanimación restantes:
+          <strong>${this.revives.remaining}</strong>.
+        </p>
       </div>
     `;
 

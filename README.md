@@ -636,3 +636,41 @@ La URL del webhook está escrita en `js/main.js`. Al estar publicada en GitHub P
 ## Corrección: Laboratorio integrado
 
 El laboratorio `integrado` ahora forma parte de la campaña. En `data/questions.json`, `campaignExcludedLaboratoryIds` está vacío, por lo que se muestran y ejecutan todos los laboratorios definidos.
+
+
+---
+
+## Banco definitivo de preguntas
+
+La versión actual contiene 20 preguntas distribuidas en cuatro laboratorios:
+
+1. Bibliografía comentada.
+2. Fundamentos teóricos y empíricos.
+3. Géneros de circulación académica.
+4. Normas de referencias y mecanismos de cita.
+
+## Cantidad total de intentos de reanimación
+
+Los intentos ya no se restauran al cambiar de laboratorio. Se comparten durante toda la partida.
+
+Para cambiar la cantidad, abre:
+
+```text
+data/questions.json
+```
+
+y modifica:
+
+```json
+"revives": 3
+```
+
+Por ejemplo, para permitir cinco intentos:
+
+```json
+"revives": 5
+```
+
+## Botón de confirmación
+
+El botón para confirmar una respuesta ahora permanece fijo en la parte inferior del panel. El contenido de la pregunta puede desplazarse sin que el botón quede fuera de la pantalla.

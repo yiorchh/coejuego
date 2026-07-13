@@ -21,12 +21,18 @@ export class ReviveManager {
     this.zone = document.querySelector(".revive-zone");
   }
 
-  resetForLaboratory({ laboratoryIndex = 0, difficulty = {} } = {}) {
+  resetCampaign() {
     this.remaining = this.totalRevives;
+    this.onUpdate?.(this.remaining);
+  }
 
-    const extraClicks = (difficulty.extraClicksPerLaboratory ?? 1) * laboratoryIndex;
-    const durationReduction = (difficulty.durationReductionMsPerLaboratory ?? 250) * laboratoryIndex;
-    const speedIncrease = (difficulty.blinkSpeedIncreasePerLaboratory ?? 0.08) * laboratoryIndex;
+  configureForLaboratory({ laboratoryIndex = 0, difficulty = {} } = {}) {
+    const extraClicks =
+      (difficulty.extraClicksPerLaboratory ?? 1) * laboratoryIndex;
+    const durationReduction =
+      (difficulty.durationReductionMsPerLaboratory ?? 250) * laboratoryIndex;
+    const speedIncrease =
+      (difficulty.blinkSpeedIncreasePerLaboratory ?? 0.08) * laboratoryIndex;
 
     this.clicksRequired = this.baseClicksRequired + extraClicks;
     this.durationMs = Math.max(
@@ -40,6 +46,7 @@ export class ReviveManager {
       )
     );
 
+    // Solo actualiza el indicador. No restaura los intentos.
     this.onUpdate?.(this.remaining);
   }
 
