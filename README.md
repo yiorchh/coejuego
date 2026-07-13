@@ -687,3 +687,27 @@ El botón para confirmar una respuesta ahora permanece fijo en la parte inferior
 - Cada respuesta correcta añade una mayor cantidad de líquido.
 - Una respuesta incorrecta también vierte una poción roja inestable antes de la explosión.
 - La explosión utiliza un destello, anillo expansivo, partículas y una vibración más intensa.
+
+
+---
+
+## Preguntas prácticas
+
+Se reemplazó una pregunta de cada laboratorio por un caso de aplicación:
+
+- Evaluar qué información falta en un comentario de bibliografía comentada.
+- Reconocer evidencia empírica dentro de una investigación concreta.
+- Elegir el género académico adecuado para comunicar un experimento.
+- Corregir una paráfrasis que no reconoce al autor original.
+
+## Matraz principal
+
+El matraz fue ampliado y ahora utiliza:
+
+- bordes oscuros semitransparentes;
+- reflejos de vidrio;
+- sombras internas y externas;
+- cuello claramente definido;
+- líquido adaptado a la forma del recipiente.
+
+El chorro se posiciona exactamente sobre el centro de la boca del matraz.

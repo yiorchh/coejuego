@@ -1077,3 +1077,216 @@ button { cursor: pointer; }
     bottom: 82px;
   }
 }
+
+
+/* ================================================================
+   Matraz Erlenmeyer grande, visible y con apariencia de vidrio
+   ================================================================ */
+
+.lab-equipment {
+  height: 380px;
+  bottom: 72px;
+}
+
+.beaker.flask-main {
+  left: 50%;
+  bottom: 4px;
+  width: 320px;
+  height: 330px;
+  transform: translateX(-50%);
+  clip-path: polygon(
+    41% 0,
+    59% 0,
+    59% 20%,
+    88% 76%,
+    86% 88%,
+    76% 97%,
+    24% 97%,
+    14% 88%,
+    12% 76%,
+    41% 20%
+  );
+  background:
+    linear-gradient(
+      105deg,
+      rgba(255,255,255,.78) 0 8%,
+      rgba(190,220,238,.22) 9% 34%,
+      rgba(255,255,255,.12) 35% 68%,
+      rgba(134,177,207,.28) 69% 84%,
+      rgba(255,255,255,.72) 85% 100%
+    );
+  box-shadow:
+    inset 0 0 0 10px rgba(47,75,101,.82),
+    inset 16px 0 22px rgba(255,255,255,.7),
+    inset -18px 0 25px rgba(91,139,174,.23),
+    inset 0 -20px 34px rgba(59,95,122,.18);
+  filter:
+    drop-shadow(0 20px 22px rgba(36,55,75,.32))
+    drop-shadow(0 0 5px rgba(62,88,114,.52));
+}
+
+.beaker.flask-main::before {
+  top: 0;
+  left: 41%;
+  width: 18%;
+  height: 72px;
+  border: 10px solid rgba(47,75,101,.84);
+  border-bottom: 0;
+  border-radius: 12px 12px 2px 2px;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255,255,255,.72),
+      rgba(174,210,232,.2) 45%,
+      rgba(255,255,255,.6)
+    );
+  box-shadow:
+    inset 6px 0 8px rgba(255,255,255,.65),
+    inset -6px 0 8px rgba(88,134,166,.18);
+}
+
+.beaker.flask-main::after {
+  content: "";
+  position: absolute;
+  z-index: 4;
+  left: 21%;
+  top: 35%;
+  width: 18%;
+  height: 43%;
+  border-radius: 50%;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255,255,255,.62),
+      rgba(255,255,255,.08)
+    );
+  transform: rotate(13deg);
+  pointer-events: none;
+}
+
+.beaker.flask-main .beaker-liquid {
+  left: 8%;
+  right: 8%;
+  bottom: 3%;
+  border-radius: 0 0 48% 48% / 0 0 42% 42%;
+  box-shadow:
+    inset 0 12px 18px rgba(255,255,255,.28),
+    inset 0 -18px 22px rgba(35,65,85,.18);
+}
+
+.beaker.flask-main .liquid-wave {
+  height: 28px;
+  top: -13px;
+}
+
+.beaker.flask-main .beaker-label {
+  bottom: 44px;
+  padding: 5px 10px;
+  border-radius: 9px;
+  background: rgba(255,255,255,.54);
+  border: 1px solid rgba(47,75,101,.25);
+  font-size: .78rem;
+}
+
+/* ================================================================
+   Botella a un costado y chorro centrado en la boca del matraz
+   ================================================================ */
+
+.pouring-potion {
+  left: 50%;
+  top: -28px;
+  width: 220px;
+  height: 245px;
+  transform: translateX(-50%);
+}
+
+.pouring-potion.active {
+  animation: centeredPotionContainer 1.25s ease forwards;
+}
+
+.pouring-potion .potion-bottle {
+  left: 124px;
+  top: 0;
+  width: 62px;
+  height: 92px;
+  transform: rotate(-58deg);
+  transform-origin: 12px 78px;
+}
+
+.pouring-potion .potion-stream {
+  left: 105px;
+  top: 69px;
+  width: 11px;
+  height: 150px;
+  border-radius: 999px;
+  transform-origin: top center;
+  box-shadow: 0 0 7px currentColor;
+}
+
+/* El centro del contenedor está en 110 px; el chorro ocupa 105–116 px. */
+.pouring-potion.active .potion-stream {
+  animation: centeredVerticalStream 1.08s .1s ease forwards;
+}
+
+@keyframes centeredPotionContainer {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translate(34px,-20px);
+  }
+  18%, 80% {
+    opacity: 1;
+    transform: translateX(-50%) translate(0,0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translate(30px,-18px);
+  }
+}
+
+@keyframes centeredVerticalStream {
+  0% {
+    opacity: 0;
+    transform: scaleY(0);
+  }
+  16%, 84% {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scaleY(.04);
+  }
+}
+
+@media (max-width: 620px) {
+  .lab-equipment {
+    height: 340px;
+    bottom: 54px;
+    transform: none;
+  }
+
+  .beaker.flask-main {
+    width: 280px;
+    height: 295px;
+    bottom: 0;
+  }
+
+  .beaker.flask-main::before {
+    height: 64px;
+    border-width: 9px;
+  }
+
+  .pouring-potion {
+    top: -25px;
+    width: 200px;
+  }
+
+  .pouring-potion .potion-bottle {
+    left: 114px;
+  }
+
+  .pouring-potion .potion-stream {
+    left: 95px;
+    height: 138px;
+  }
+}

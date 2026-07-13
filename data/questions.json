@@ -99,16 +99,16 @@
           "id": "bc-05",
           "type": "multiple_choice",
           "category": "Bibliografía comentada",
-          "level": 2,
-          "prompt": "¿Qué aspecto debe incluir el comentario de una bibliografía comentada?",
+          "level": 3,
+          "prompt": "Una estudiante escribe este comentario: «El artículo explica las causas del plagio académico y utiliza una encuesta aplicada a 300 estudiantes». ¿Qué oración debería agregar para convertirlo en un comentario de bibliografía comentada más completo?",
           "options": [
-            "Solo la cantidad de páginas.",
-            "Un análisis del contenido y su utilidad.",
-            "El precio del libro.",
-            "El lugar donde fue comprado."
+            "El artículo tiene doce páginas y fue descargado un lunes.",
+            "La fuente será útil para fundamentar el apartado sobre las causas del plagio, porque aporta datos obtenidos de estudiantes.",
+            "El título del artículo está escrito con letras grandes.",
+            "La autora probablemente tardó mucho tiempo en escribirlo."
           ],
           "correctIndex": 1,
-          "explanation": "El comentario debe explicar el contenido y valorar cómo la fuente contribuye al trabajo."
+          "explanation": "Un comentario completo no solo resume: también explica la utilidad y el aporte de la fuente al trabajo."
         }
       ]
     },
@@ -186,17 +186,17 @@
         {
           "id": "ft-10",
           "type": "multiple_choice",
-          "category": "Evidencia empírica",
-          "level": 2,
-          "prompt": "¿Cuál de los siguientes es un ejemplo de evidencia empírica?",
+          "category": "Fundamentos teóricos y empíricos",
+          "level": 3,
+          "prompt": "Un grupo investiga si dormir menos de seis horas afecta el rendimiento académico. ¿Cuál información funcionaría como fundamento empírico?",
           "options": [
-            "Una teoría científica.",
-            "Resultados obtenidos mediante un experimento.",
-            "Una opinión sin respaldo.",
-            "Una suposición."
+            "Una definición del concepto de sueño.",
+            "Un modelo teórico sobre memoria y aprendizaje.",
+            "Las calificaciones y horas de sueño registradas en 200 estudiantes.",
+            "La opinión de un integrante del grupo."
           ],
-          "correctIndex": 1,
-          "explanation": "Los resultados de un experimento constituyen datos observables y, por tanto, evidencia empírica."
+          "correctIndex": 2,
+          "explanation": "Los registros obtenidos de participantes son datos observables y constituyen evidencia empírica."
         }
       ]
     },
@@ -274,17 +274,17 @@
         {
           "id": "ga-15",
           "type": "multiple_choice",
-          "category": "Texto académico",
-          "level": 2,
-          "prompt": "¿Cuál es una característica propia de un texto académico?",
+          "category": "Géneros académicos",
+          "level": 3,
+          "prompt": "Debes comunicar el procedimiento, los materiales, los resultados y las conclusiones de una experiencia realizada en laboratorio. ¿Qué género académico es el más apropiado?",
           "options": [
-            "Lenguaje coloquial.",
-            "Información respaldada por evidencias.",
-            "Opiniones sin fundamento.",
-            "Ausencia de referencias."
+            "Ensayo personal.",
+            "Informe de laboratorio.",
+            "Cuento científico.",
+            "Reseña literaria."
           ],
           "correctIndex": 1,
-          "explanation": "Los textos académicos fundamentan sus afirmaciones con evidencia y fuentes."
+          "explanation": "El informe de laboratorio comunica de manera organizada el procedimiento y los resultados de una experiencia experimental."
         }
       ]
     },
@@ -362,17 +362,17 @@
         {
           "id": "nc-20",
           "type": "multiple_choice",
-          "category": "Plagio",
-          "level": 2,
-          "prompt": "¿Cuál de las siguientes acciones constituye plagio?",
+          "category": "Citación y plagio",
+          "level": 3,
+          "prompt": "Lee este caso: Camila tomó una idea de Rojas, cambió algunas palabras y la incluyó sin mencionar al autor. ¿Qué debería hacer para corregir el texto?",
           "options": [
-            "Citar correctamente la fuente.",
-            "Parafrasear indicando el autor.",
-            "Copiar información de otro autor sin citar la fuente.",
-            "Elaborar una referencia bibliográfica."
+            "Dejarlo igual, porque ya cambió las palabras.",
+            "Añadir solamente la referencia al final, sin citar dentro del texto.",
+            "Incluir una cita de Rojas en el texto y agregar la referencia completa al final.",
+            "Poner la idea entre comillas, pero sin indicar la fuente."
           ],
           "correctIndex": 2,
-          "explanation": "Usar información ajena sin reconocer la fuente constituye plagio."
+          "explanation": "Aunque se use paráfrasis, debe reconocerse al autor en el texto y añadirse la referencia completa."
         }
       ]
     }
