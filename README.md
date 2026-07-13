@@ -711,3 +711,18 @@ El matraz fue ampliado y ahora utiliza:
 - líquido adaptado a la forma del recipiente.
 
 El chorro se posiciona exactamente sobre el centro de la boca del matraz.
+
+
+---
+
+## Corrección definitiva del matraz
+
+El matraz ahora mide 470 × 450 píxeles en escritorio y hasta 390 × 390 píxeles en teléfonos.
+
+El chorro dejó de calcularse respecto de la botella. Ahora utiliza el centro absoluto del laboratorio:
+
+```css
+left: calc(50% - 6px);
+```
+
+Como el matraz también está centrado con `left: 50%`, ambos comparten exactamente el mismo eje vertical. La botella puede permanecer inclinada a un costado sin desplazar el chorro.

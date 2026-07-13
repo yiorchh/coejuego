@@ -1290,3 +1290,289 @@ button { cursor: pointer; }
     height: 138px;
   }
 }
+
+
+/* ==================================================================
+   CORRECCIÓN DEFINITIVA DEL MATRAZ Y DEL CHORRO
+   Estas reglas deben permanecer al final del archivo.
+   ================================================================== */
+
+.lab-equipment {
+  height: 520px;
+  bottom: 28px;
+  overflow: visible;
+}
+
+/*
+  Matraz Erlenmeyer gigante.
+  El centro horizontal siempre es exactamente el 50% del laboratorio.
+*/
+.beaker.flask-main {
+  left: 50%;
+  bottom: 0;
+  width: 470px;
+  height: 450px;
+  transform: translateX(-50%);
+  overflow: hidden;
+
+  clip-path: polygon(
+    42% 0%,
+    58% 0%,
+    58% 20%,
+    63% 29%,
+    91% 78%,
+    91% 87%,
+    82% 96%,
+    70% 100%,
+    30% 100%,
+    18% 96%,
+    9% 87%,
+    9% 78%,
+    37% 29%,
+    42% 20%
+  );
+
+  background:
+    linear-gradient(
+      105deg,
+      rgba(255,255,255,.92) 0 6%,
+      rgba(183,218,239,.38) 7% 18%,
+      rgba(255,255,255,.18) 19% 64%,
+      rgba(115,164,199,.36) 65% 82%,
+      rgba(255,255,255,.86) 83% 100%
+    );
+
+  box-shadow:
+    inset 0 0 0 13px rgba(43,68,91,.94),
+    inset 0 0 0 18px rgba(207,232,246,.52),
+    inset 24px 0 32px rgba(255,255,255,.74),
+    inset -26px 0 34px rgba(74,119,151,.28),
+    inset 0 -28px 45px rgba(40,73,98,.22);
+
+  filter:
+    drop-shadow(0 28px 28px rgba(24,42,58,.42))
+    drop-shadow(0 0 8px rgba(43,68,91,.75));
+}
+
+/* Cuello definido y grueso. */
+.beaker.flask-main::before {
+  content: "";
+  position: absolute;
+  z-index: 8;
+  top: 0;
+  left: 42%;
+  width: 16%;
+  height: 104px;
+
+  border: 13px solid rgba(43,68,91,.96);
+  border-bottom: 0;
+  border-radius: 15px 15px 4px 4px;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255,255,255,.9) 0,
+      rgba(184,220,241,.32) 38%,
+      rgba(255,255,255,.2) 64%,
+      rgba(255,255,255,.82) 100%
+    );
+
+  box-shadow:
+    inset 8px 0 12px rgba(255,255,255,.76),
+    inset -8px 0 12px rgba(72,118,151,.3),
+    0 0 0 4px rgba(212,235,248,.42);
+}
+
+/* Reflejo grande que permite identificarlo claramente como vidrio. */
+.beaker.flask-main::after {
+  content: "";
+  position: absolute;
+  z-index: 6;
+  top: 30%;
+  left: 18%;
+  width: 18%;
+  height: 50%;
+  border-radius: 50%;
+  transform: rotate(14deg);
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255,255,255,.78),
+      rgba(255,255,255,.2) 54%,
+      rgba(255,255,255,0)
+    );
+
+  filter: blur(.4px);
+  pointer-events: none;
+}
+
+/* Líquido adaptado al cuerpo ancho del matraz. */
+.beaker.flask-main .beaker-liquid {
+  left: 7%;
+  right: 7%;
+  bottom: 2%;
+  border-radius: 0 0 48% 48% / 0 0 38% 38%;
+
+  box-shadow:
+    inset 0 16px 22px rgba(255,255,255,.34),
+    inset 0 -24px 30px rgba(28,57,77,.24);
+}
+
+.beaker.flask-main .liquid-wave {
+  top: -16px;
+  height: 34px;
+}
+
+.beaker.flask-main .beaker-label {
+  bottom: 55px;
+  padding: 7px 13px;
+  border: 2px solid rgba(43,68,91,.38);
+  border-radius: 10px;
+  background: rgba(255,255,255,.68);
+  font-size: .84rem;
+  box-shadow: 0 3px 10px rgba(35,55,72,.15);
+}
+
+/*
+  IMPORTANTE:
+  El contenedor de la poción ocupa TODO el ancho del laboratorio.
+  Por eso el chorro se coloca con left: 50%, exactamente en el centro
+  real de la boca del matraz, sin depender de la botella.
+*/
+.pouring-potion {
+  position: absolute;
+  z-index: 12;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transform: none;
+  pointer-events: none;
+}
+
+.pouring-potion.active {
+  animation: fullAreaPotionAnimation 1.35s ease forwards;
+}
+
+/* La botella queda desplazada a la derecha, pero no mueve el chorro. */
+.pouring-potion .potion-bottle {
+  position: absolute;
+  left: calc(50% + 42px);
+  top: -55px;
+  width: 72px;
+  height: 104px;
+  transform: rotate(-58deg);
+  transform-origin: 12px 88px;
+}
+
+/*
+  Chorro independiente, vertical y centrado.
+  La boca del matraz empieza aproximadamente a 70 px desde arriba
+  dentro del área de laboratorio.
+*/
+.pouring-potion .potion-stream {
+  position: absolute;
+  left: calc(50% - 6px);
+  top: 2px;
+  width: 12px;
+  height: 84px;
+
+  border-radius: 999px;
+  transform-origin: top center;
+  transform: scaleY(0);
+  opacity: 0;
+
+  box-shadow:
+    0 0 7px currentColor,
+    0 0 12px rgba(255,255,255,.38);
+}
+
+.pouring-potion.active .potion-stream {
+  animation: perfectlyCenteredStream 1.12s .12s ease forwards;
+}
+
+@keyframes fullAreaPotionAnimation {
+  0% {
+    opacity: 0;
+  }
+  14%, 84% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes perfectlyCenteredStream {
+  0% {
+    opacity: 0;
+    transform: scaleY(0);
+  }
+  15% {
+    opacity: 1;
+    transform: scaleY(.15);
+  }
+  28%, 82% {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scaleY(.04);
+  }
+}
+
+/* El matraz y el chorro también siguen siendo grandes en teléfonos. */
+@media (max-width: 760px) {
+  .lab-equipment {
+    height: 430px;
+    bottom: 18px;
+    transform: none;
+  }
+
+  .beaker.flask-main {
+    width: min(390px, 96vw);
+    height: 390px;
+    bottom: 0;
+  }
+
+  .beaker.flask-main::before {
+    height: 88px;
+    border-width: 11px;
+  }
+
+  .pouring-potion .potion-bottle {
+    left: calc(50% + 31px);
+    top: -48px;
+    width: 64px;
+    height: 94px;
+  }
+
+  .pouring-potion .potion-stream {
+    left: calc(50% - 5px);
+    top: 1px;
+    width: 10px;
+    height: 70px;
+  }
+}
+
+@media (max-width: 420px) {
+  .lab-equipment {
+    height: 390px;
+  }
+
+  .beaker.flask-main {
+    width: 350px;
+    height: 360px;
+  }
+
+  .beaker.flask-main::before {
+    height: 80px;
+    border-width: 10px;
+  }
+
+  .pouring-potion .potion-stream {
+    height: 60px;
+  }
+}
