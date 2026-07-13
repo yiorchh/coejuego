@@ -1,0 +1,338 @@
+{
+  "config": {
+    "title": "APA-9000",
+    "health": 100,
+    "damagePerError": 25,
+    "revives": 3,
+    "reviveHealth": 50,
+    "reviveDurationMs": 6500,
+    "reviveClicksRequired": 8,
+    "reviveBlinkIntervalsMs": [
+      1100,
+      900,
+      700
+    ],
+    "pointsPerCorrect": 100,
+    "timeBonusMax": 500,
+    "campaignExcludedLaboratoryIds": [],
+    "laboratoryDifficulty": {
+      "extraClicksPerLaboratory": 1,
+      "durationReductionMsPerLaboratory": 250,
+      "blinkSpeedIncreasePerLaboratory": 0.08,
+      "minimumDurationMs": 5250,
+      "minimumBlinkIntervalMs": 520
+    }
+  },
+  "laboratories": [
+    {
+      "id": "integrado",
+      "name": "Laboratorio integrado",
+      "description": "Todos los contenidos de la presentación",
+      "questions": [
+        {
+          "id": "int-01",
+          "type": "multiple_choice",
+          "category": "Bibliografía comentada",
+          "level": 1,
+          "prompt": "¿Qué distingue principalmente a una bibliografía comentada de una bibliografía común?",
+          "options": [
+            "Incluye únicamente enlaces web",
+            "Añade un comentario sobre el contenido, utilidad y aporte de cada fuente",
+            "Ordena las fuentes por fecha y no por autor",
+            "Elimina el nombre de la editorial"
+          ],
+          "correctIndex": 1,
+          "explanation": "La bibliografía comentada presenta la referencia y explica su aporte al trabajo."
+        },
+        {
+          "id": "int-02",
+          "type": "true_false",
+          "category": "Fundamentos",
+          "level": 1,
+          "prompt": "Un fundamento empírico proviene de observaciones, estudios o experimentos.",
+          "correct": true,
+          "explanation": "Lo empírico se apoya en evidencia observable o medible."
+        },
+        {
+          "id": "int-03",
+          "type": "matching",
+          "category": "Estructura APA",
+          "level": 2,
+          "prompt": "Relaciona cada elemento de una referencia con su función.",
+          "pairs": [
+            {
+              "left": "Autor",
+              "right": "Responsable de la obra"
+            },
+            {
+              "left": "Fecha",
+              "right": "Momento de publicación"
+            },
+            {
+              "left": "Título",
+              "right": "Nombre de la obra"
+            },
+            {
+              "left": "Fuente",
+              "right": "Lugar donde puede recuperarse"
+            }
+          ],
+          "explanation": "Estos elementos permiten identificar y localizar una fuente."
+        },
+        {
+          "id": "int-04",
+          "type": "apa_complete",
+          "category": "Referencias",
+          "level": 2,
+          "prompt": "Ordena los bloques para formar la estructura general de una referencia APA.",
+          "items": [
+            "Autor",
+            "Fecha",
+            "Título",
+            "Fuente"
+          ],
+          "correctOrder": [
+            "Autor",
+            "Fecha",
+            "Título",
+            "Fuente"
+          ],
+          "explanation": "La estructura general es Autor, Fecha, Título y Fuente."
+        },
+        {
+          "id": "int-05",
+          "type": "order",
+          "category": "Proceso académico",
+          "level": 3,
+          "prompt": "Ordena estas acciones para construir una bibliografía comentada.",
+          "items": [
+            "Explicar la utilidad de la fuente",
+            "Seleccionar una fuente pertinente",
+            "Redactar la referencia bibliográfica",
+            "Identificar la idea principal"
+          ],
+          "correctOrder": [
+            "Seleccionar una fuente pertinente",
+            "Redactar la referencia bibliográfica",
+            "Identificar la idea principal",
+            "Explicar la utilidad de la fuente"
+          ],
+          "explanation": "Primero se selecciona y registra la fuente; luego se analiza y valora."
+        },
+        {
+          "id": "int-06",
+          "type": "multiple_choice",
+          "category": "Mecanismos de citación",
+          "level": 3,
+          "prompt": "¿Cuál ejemplo corresponde a una cita narrativa?",
+          "options": [
+            "(Gómez, 2024) sostiene que la claridad es esencial.",
+            "Gómez (2024) sostiene que la claridad es esencial.",
+            "La claridad es esencial (2024, Gómez).",
+            "Gómez sostiene que la claridad es esencial."
+          ],
+          "correctIndex": 1,
+          "explanation": "En la cita narrativa, el autor forma parte de la oración y el año va entre paréntesis."
+        }
+      ]
+    },
+    {
+      "id": "apa",
+      "name": "Laboratorio APA",
+      "description": "Estructura, referencias y citas",
+      "questions": [
+        {
+          "id": "apa-01",
+          "type": "apa_complete",
+          "category": "Estructura APA",
+          "level": 1,
+          "prompt": "Ordena la referencia desde el primer elemento hasta el último.",
+          "items": [
+            "Título",
+            "Fuente",
+            "Autor",
+            "Fecha"
+          ],
+          "correctOrder": [
+            "Autor",
+            "Fecha",
+            "Título",
+            "Fuente"
+          ],
+          "explanation": "La forma general es Autor, Fecha, Título y Fuente."
+        },
+        {
+          "id": "apa-02",
+          "type": "multiple_choice",
+          "category": "Citas",
+          "level": 1,
+          "prompt": "¿Cuál es una cita parentética correctamente construida?",
+          "options": [
+            "Pérez 2022 afirma que...",
+            "Según (Pérez, 2022)...",
+            "La evidencia es concluyente (Pérez, 2022).",
+            "La evidencia es concluyente Pérez (2022)."
+          ],
+          "correctIndex": 2,
+          "explanation": "La cita parentética integra autor y año dentro de paréntesis."
+        },
+        {
+          "id": "apa-03",
+          "type": "matching",
+          "category": "Citas",
+          "level": 2,
+          "prompt": "Relaciona el tipo de cita con su característica.",
+          "pairs": [
+            {
+              "left": "Narrativa",
+              "right": "El autor aparece dentro de la redacción"
+            },
+            {
+              "left": "Parentética",
+              "right": "Autor y año aparecen entre paréntesis"
+            },
+            {
+              "left": "Textual",
+              "right": "Reproduce palabras exactas de la fuente"
+            }
+          ],
+          "explanation": "Cada mecanismo integra la fuente de una manera distinta."
+        },
+        {
+          "id": "apa-04",
+          "type": "true_false",
+          "category": "Referencias",
+          "level": 2,
+          "prompt": "La lista de referencias debe organizarse alfabéticamente.",
+          "correct": true,
+          "explanation": "El orden alfabético facilita localizar las fuentes."
+        }
+      ]
+    },
+    {
+      "id": "fundamentos",
+      "name": "Laboratorio de fundamentos",
+      "description": "Teoría y evidencia empírica",
+      "questions": [
+        {
+          "id": "fun-01",
+          "type": "matching",
+          "category": "Fundamentos",
+          "level": 1,
+          "prompt": "Relaciona cada afirmación con su tipo de fundamento.",
+          "pairs": [
+            {
+              "left": "Modelo que explica un fenómeno",
+              "right": "Teórico"
+            },
+            {
+              "left": "Resultado de una encuesta",
+              "right": "Empírico"
+            },
+            {
+              "left": "Definición de una variable",
+              "right": "Teórico"
+            },
+            {
+              "left": "Observación de laboratorio",
+              "right": "Empírico"
+            }
+          ],
+          "explanation": "La teoría explica; la evidencia empírica muestra qué ocurre en la realidad."
+        },
+        {
+          "id": "fun-02",
+          "type": "multiple_choice",
+          "category": "Fundamentos teóricos",
+          "level": 2,
+          "prompt": "¿Cuál es una función propia de los fundamentos teóricos?",
+          "options": [
+            "Registrar únicamente resultados numéricos",
+            "Definir conceptos y orientar la investigación",
+            "Reemplazar toda observación real",
+            "Evitar formular variables"
+          ],
+          "correctIndex": 1,
+          "explanation": "Los fundamentos teóricos explican el fenómeno y orientan el estudio."
+        },
+        {
+          "id": "fun-03",
+          "type": "order",
+          "category": "Investigación",
+          "level": 2,
+          "prompt": "Ordena una secuencia razonable para estudiar un fenómeno.",
+          "items": [
+            "Observar resultados",
+            "Definir conceptos",
+            "Analizar la evidencia",
+            "Diseñar la medición"
+          ],
+          "correctOrder": [
+            "Definir conceptos",
+            "Diseñar la medición",
+            "Observar resultados",
+            "Analizar la evidencia"
+          ],
+          "explanation": "Primero se define qué estudiar; después se mide, observa y analiza."
+        }
+      ]
+    },
+    {
+      "id": "generos",
+      "name": "Laboratorio de géneros",
+      "description": "Circulación y comunicación académica",
+      "questions": [
+        {
+          "id": "gen-01",
+          "type": "matching",
+          "category": "Géneros académicos",
+          "level": 1,
+          "prompt": "Relaciona cada propósito con el género académico más apropiado.",
+          "pairs": [
+            {
+              "left": "Comunicar un procedimiento experimental",
+              "right": "Informe de laboratorio"
+            },
+            {
+              "left": "Difundir resultados científicos",
+              "right": "Artículo científico"
+            },
+            {
+              "left": "Sintetizar un texto extenso",
+              "right": "Resumen"
+            },
+            {
+              "left": "Valorar el aporte de varias fuentes",
+              "right": "Bibliografía comentada"
+            }
+          ],
+          "explanation": "Cada género responde a un propósito comunicativo distinto."
+        },
+        {
+          "id": "gen-02",
+          "type": "true_false",
+          "category": "Géneros académicos",
+          "level": 1,
+          "prompt": "El informe de laboratorio y el artículo científico son géneros de circulación académica.",
+          "correct": true,
+          "explanation": "Ambos comunican conocimiento en contextos académicos."
+        },
+        {
+          "id": "gen-03",
+          "type": "multiple_choice",
+          "category": "Bibliografía comentada",
+          "level": 2,
+          "prompt": "¿Qué debe incluir el comentario de una fuente?",
+          "options": [
+            "Solo el título de la fuente",
+            "Idea principal, utilidad y aporte al trabajo",
+            "Únicamente el enlace",
+            "Una opinión sin relación con la investigación"
+          ],
+          "correctIndex": 1,
+          "explanation": "El comentario debe explicar qué aporta la fuente y por qué resulta útil."
+        }
+      ]
+    }
+  ]
+}
