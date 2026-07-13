@@ -13,6 +13,6 @@ export class AnimationManager {
     setTimeout(() => {
       this.explosionElement.classList.remove("active");
       this.laboratoryElement.classList.remove("shake");
-    }, 750);
+    }, 1100);
   }
 }

@@ -32,21 +32,21 @@ export class ReviveManager {
     const durationReduction =
       (difficulty.durationReductionMsPerLaboratory ?? 250) * laboratoryIndex;
     const speedIncrease =
-      (difficulty.blinkSpeedIncreasePerLaboratory ?? 0.08) * laboratoryIndex;
+      (difficulty.blinkSpeedIncreasePerLaboratory ?? 0.06) * laboratoryIndex;
 
     this.clicksRequired = this.baseClicksRequired + extraClicks;
     this.durationMs = Math.max(
-      difficulty.minimumDurationMs ?? 5000,
+      difficulty.minimumDurationMs ?? 5500,
       this.baseDurationMs - durationReduction
     );
+
     this.blinkIntervals = this.baseBlinkIntervals.map(interval =>
       Math.max(
-        difficulty.minimumBlinkIntervalMs ?? 500,
+        difficulty.minimumBlinkIntervalMs ?? 650,
         Math.round(interval * (1 - speedIncrease))
       )
     );
 
-    // Solo actualiza el indicador. No restaura los intentos.
     this.onUpdate?.(this.remaining);
   }
 
@@ -54,57 +54,94 @@ export class ReviveManager {
     if (this.remaining <= 0) return false;
 
     const attemptNumber = this.totalRevives - this.remaining + 1;
-    const blinkInterval =
-      this.blinkIntervals[Math.min(attemptNumber - 1, this.blinkIntervals.length - 1)];
+    const moveInterval =
+      this.blinkIntervals[
+        Math.min(attemptNumber - 1, this.blinkIntervals.length - 1)
+      ];
 
     this.remaining -= 1;
     this.onUpdate?.(this.remaining);
 
     this.modal.classList.add("active");
     this.modal.setAttribute("aria-hidden", "false");
-    this.attemptText.textContent = `Intento ${attemptNumber} de ${this.totalRevives}`;
-    this.instruction.textContent = "¡PRESIONA EL BOTÓN ⚡ CORRECTO!";
+    this.attemptText.textContent =
+      `Intento ${attemptNumber} de ${this.totalRevives}`;
+    this.instruction.textContent =
+      "¡PRESIONA EL BOTÓN ⚡ ANTES DE QUE CAMBIE DE POSICIÓN!";
     this.hint.textContent =
-      `Necesitas ${this.clicksRequired} pulsaciones antes de que termine el tiempo.`;
+      `Necesitas ${this.clicksRequired} pulsaciones. El botón siempre permanece visible.`;
     this.progress.style.width = "0%";
 
     let clicks = 0;
     let finished = false;
     const startTime = performance.now();
-    let rafId;
-    let blinkId;
+    let rafId = null;
+    let moveTimer = null;
 
     const moveButton = () => {
-      const maxX = Math.max(0, this.zone.clientWidth - this.button.offsetWidth);
-      const maxY = Math.max(0, this.zone.clientHeight - this.button.offsetHeight);
-      this.button.style.left = `${Math.random() * maxX}px`;
-      this.button.style.top = `${Math.random() * maxY}px`;
-      this.button.classList.add("hidden");
-      setTimeout(
-        () => this.button.classList.remove("hidden"),
-        Math.min(120, blinkInterval * 0.22)
+      if (finished) return;
+
+      const padding = 8;
+      const maxX = Math.max(
+        padding,
+        this.zone.clientWidth - this.button.offsetWidth - padding
       );
+      const maxY = Math.max(
+        padding,
+        this.zone.clientHeight - this.button.offsetHeight - padding
+      );
+
+      this.button.classList.add("moving");
+
+      requestAnimationFrame(() => {
+        this.button.style.left =
+          `${padding + Math.random() * Math.max(0, maxX - padding)}px`;
+        this.button.style.top =
+          `${padding + Math.random() * Math.max(0, maxY - padding)}px`;
+
+        setTimeout(() => this.button.classList.remove("moving"), 140);
+      });
+    };
+
+    const scheduleMove = () => {
+      clearTimeout(moveTimer);
+      moveTimer = setTimeout(() => {
+        moveButton();
+        scheduleMove();
+      }, moveInterval);
     };
 
     const clickHandler = () => {
-      if (finished || this.button.classList.contains("hidden")) return;
+      if (finished) return;
+
       clicks += 1;
       this.progress.style.width =
-        `${Math.min(100, clicks / this.clicksRequired * 100)}%`;
+        `${Math.min(100, (clicks / this.clicksRequired) * 100)}%`;
+
       this.instruction.textContent =
         clicks >= this.clicksRequired
           ? "¡REACTIVACIÓN COMPLETA!"
-          : `¡BOTÓN CORRECTO! ${clicks}/${this.clicksRequired}`;
+          : `¡BIEN! ${clicks}/${this.clicksRequired}`;
+
       moveButton();
+      scheduleMove();
     };
 
+    this.button.style.left = "calc(50% - 44px)";
+    this.button.style.top = "calc(50% - 44px)";
+    this.button.classList.remove("hidden", "moving");
     this.button.addEventListener("click", clickHandler);
-    blinkId = setInterval(moveButton, blinkInterval);
+    scheduleMove();
 
     const result = await new Promise(resolve => {
       const frame = now => {
-        const remainingTime = Math.max(0, this.durationMs - (now - startTime));
-        this.timerText.textContent = `${(remainingTime / 1000).toFixed(1)} s`;
+        const remainingTime = Math.max(
+          0,
+          this.durationMs - (now - startTime)
+        );
+
+        this.timerText.textContent =
+          `${(remainingTime / 1000).toFixed(1)} s`;
 
         if (clicks >= this.clicksRequired) {
           finished = true;
@@ -124,10 +161,10 @@ export class ReviveManager {
       rafId = requestAnimationFrame(frame);
     });
 
-    cancelAnimationFrame(rafId);
-    clearInterval(blinkId);
+    if (rafId) cancelAnimationFrame(rafId);
+    clearTimeout(moveTimer);
     this.button.removeEventListener("click", clickHandler);
-    this.button.classList.remove("hidden");
+    this.button.classList.remove("moving", "hidden");
     this.modal.classList.remove("active");
     this.modal.setAttribute("aria-hidden", "true");
 

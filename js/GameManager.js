@@ -190,9 +190,13 @@ export class GameManager {
       feedback.textContent = question.explanation || "La mezcla fue inestable.";
       feedback.className = "feedback wrong";
       this.audio.wrong();
+
+      // La poción incorrecta se vierte antes de provocar la explosión.
+      await this.potions.pourUnstable();
+
       this.animations.explode();
       this.health.hit();
-      await new Promise(resolve => setTimeout(resolve, 900));
+      await new Promise(resolve => setTimeout(resolve, 1250));
 
       if (this.health.health === 0) {
         this.questionPanel.classList.remove("reaction-active");

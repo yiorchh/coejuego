@@ -27,38 +27,78 @@ export class PotionManager {
   }
 
   randomColor() {
-    return POTION_COLORS[Math.floor(Math.random() * POTION_COLORS.length)];
+    return POTION_COLORS[
+      Math.floor(Math.random() * POTION_COLORS.length)
+    ];
   }
 
   mixColors(current, incoming) {
     if (!current) return incoming;
+
     const previousWeight = this.count;
     return current.map((value, index) =>
-      Math.round((value * previousWeight + incoming[index]) / (previousWeight + 1))
+      Math.round(
+        (value * previousWeight + incoming[index]) /
+        (previousWeight + 1)
+      )
     );
+  }
+
+  async animatePour({ color, unstable = false }) {
+    const rgb = `rgb(${color.join(",")})`;
+
+    this.bottleElement
+      .querySelector(".potion-liquid")
+      .style.backgroundColor = rgb;
+
+    this.bottleElement
+      .querySelector(".potion-stream")
+      .style.backgroundColor = rgb;
+
+    this.bottleElement.classList.remove("active", "unstable");
+    void this.bottleElement.offsetWidth;
+
+    if (unstable) {
+      this.bottleElement.classList.add("unstable");
+    }
+
+    this.bottleElement.classList.add("active");
+
+    await new Promise(resolve => setTimeout(resolve, 1250));
+
+    this.bottleElement.classList.remove("active", "unstable");
   }
 
   async pour() {
     const incoming = this.randomColor();
     const mixed = this.mixColors(this.currentColor, incoming);
-    const color = `rgb(${incoming.join(",")})`;
-    const mixedColor = `rgb(${mixed.join(",")})`;
 
-    this.bottleElement.querySelector(".potion-liquid").style.backgroundColor = color;
-    this.bottleElement.querySelector(".potion-stream").style.backgroundColor = color;
-    this.bottleElement.classList.remove("active");
-    void this.bottleElement.offsetWidth;
-    this.bottleElement.classList.add("active");
-
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await this.animatePour({ color: incoming });
 
     this.count += 1;
     this.currentColor = mixed;
     this.countElement.textContent = String(this.count);
-    this.liquidElement.style.backgroundColor = mixedColor;
-    this.liquidElement.style.height = `${Math.min(88, 14 + (this.count / this.maxPotions) * 74)}%`;
 
-    await new Promise(resolve => setTimeout(resolve, 900));
-    this.bottleElement.classList.remove("active");
+    this.liquidElement.style.backgroundColor =
+      `rgb(${mixed.join(",")})`;
+
+    // El matraz se llena más por cada respuesta correcta.
+    const fillPercentage = Math.min(
+      92,
+      20 + (this.count / this.maxPotions) * 72
+    );
+
+    this.liquidElement.style.height = `${fillPercentage}%`;
+
+    await new Promise(resolve => setTimeout(resolve, 250));
+  }
+
+  async pourUnstable() {
+    // Una poción incorrecta también se vierte antes de explotar.
+    const dangerousColor = [232, 72, 72];
+    await this.animatePour({
+      color: dangerousColor,
+      unstable: true
+    });
   }
 }

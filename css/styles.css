@@ -834,3 +834,246 @@ button { cursor: pointer; }
     font-size: 1rem;
   }
 }
+
+
+/* ================================================================
+   Matraz principal
+   ================================================================ */
+
+.beaker.flask-main {
+  width: 220px;
+  height: 235px;
+  border: 0;
+  border-radius: 48% 48% 38% 38% / 28% 28% 62% 62%;
+  clip-path: polygon(
+    39% 0,
+    61% 0,
+    61% 19%,
+    88% 74%,
+    85% 86%,
+    74% 96%,
+    26% 96%,
+    15% 86%,
+    12% 74%,
+    39% 19%
+  );
+  background: rgba(255,255,255,.38);
+  box-shadow:
+    inset 0 0 0 7px rgba(62,88,114,.62),
+    inset 0 0 24px rgba(255,255,255,.9),
+    0 18px 30px rgba(45,66,88,.18);
+}
+
+.beaker.flask-main::before {
+  content: "";
+  position: absolute;
+  z-index: 5;
+  top: 0;
+  left: 39%;
+  width: 22%;
+  height: 48px;
+  border: 7px solid rgba(62,88,114,.62);
+  border-bottom: 0;
+  border-radius: 9px 9px 0 0;
+}
+
+.beaker.flask-main .beaker-liquid {
+  left: 10%;
+  right: 10%;
+  bottom: 4%;
+  border-radius: 0 0 48% 48% / 0 0 35% 35%;
+}
+
+.beaker.flask-main .beaker-label {
+  bottom: 30px;
+  font-size: .72rem;
+}
+
+/* El chorro siempre cae verticalmente hacia el centro del matraz. */
+.pouring-potion {
+  left: calc(50% + 58px);
+  top: -10px;
+  width: 90px;
+  height: 180px;
+  transform: none;
+}
+
+.pouring-potion.active {
+  animation: potionBottleStable 1.25s ease forwards;
+}
+
+.potion-bottle {
+  left: 25px;
+  top: 0;
+  transform: rotate(-52deg);
+  transform-origin: 18px 70px;
+}
+
+.potion-stream {
+  left: 3px;
+  top: 78px;
+  width: 10px;
+  height: 155px;
+  transform: none;
+  transform-origin: top center;
+}
+
+.pouring-potion.active .potion-stream {
+  animation: verticalStream 1.05s .12s ease forwards;
+}
+
+.pouring-potion.unstable .potion-bottle {
+  animation: unstableBottle .14s linear infinite;
+}
+
+@keyframes potionBottleStable {
+  0% {
+    opacity: 0;
+    transform: translate(30px,-20px);
+  }
+  18%, 78% {
+    opacity: 1;
+    transform: translate(0,0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(25px,-18px);
+  }
+}
+
+@keyframes verticalStream {
+  0% {
+    opacity: 0;
+    transform: scaleY(0);
+  }
+  18%, 82% {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scaleY(.05);
+  }
+}
+
+@keyframes unstableBottle {
+  0%,100% { margin-left: 0; }
+  50% { margin-left: 5px; }
+}
+
+/* ================================================================
+   Explosión reforzada
+   ================================================================ */
+
+.explosion {
+  width: 100px;
+  height: 100px;
+  bottom: 90px;
+  filter: drop-shadow(0 0 24px rgba(255,107,45,.95));
+}
+
+.explosion::before,
+.explosion::after {
+  content: "";
+  position: absolute;
+  inset: -45px;
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.explosion.active::before {
+  background:
+    radial-gradient(
+      circle,
+      rgba(255,255,220,1) 0 8%,
+      rgba(255,215,80,.98) 9% 22%,
+      rgba(255,95,35,.92) 23% 42%,
+      rgba(75,65,65,.72) 43% 58%,
+      transparent 60%
+    );
+  animation: explosionFlash 1.05s ease-out;
+}
+
+.explosion.active::after {
+  border: 8px solid rgba(255,125,45,.8);
+  animation: explosionRing 1.05s ease-out;
+}
+
+.explosion.active {
+  animation: explosionCoreStrong 1.05s ease-out;
+}
+
+.lab-wall.shake {
+  animation: shakeStrong .85s ease;
+}
+
+@keyframes explosionFlash {
+  0% { opacity: 0; transform: scale(.2); }
+  12% { opacity: 1; transform: scale(.65); }
+  55% { opacity: .9; transform: scale(1.8); }
+  100% { opacity: 0; transform: scale(2.8); }
+}
+
+@keyframes explosionRing {
+  0% { opacity: 1; transform: scale(.3); }
+  100% { opacity: 0; transform: scale(3); }
+}
+
+@keyframes explosionCoreStrong {
+  0% { transform: translateX(-50%) scale(.15); opacity: 1; }
+  30% { transform: translateX(-50%) scale(3.7); opacity: 1; }
+  100% { transform: translateX(-50%) scale(5.2); opacity: 0; }
+}
+
+@keyframes shakeStrong {
+  0%,100% { transform: translate(0,0) rotate(0); }
+  12% { transform: translate(-18px,8px) rotate(-1deg); }
+  24% { transform: translate(18px,-8px) rotate(1deg); }
+  36% { transform: translate(-14px,5px) rotate(-.7deg); }
+  48% { transform: translate(13px,-5px) rotate(.7deg); }
+  60% { transform: translate(-9px,3px); }
+  72% { transform: translate(8px,-3px); }
+  84% { transform: translate(-4px,2px); }
+}
+
+/* ================================================================
+   Reanimación: botón siempre visible y movimiento comprensible
+   ================================================================ */
+
+.revive-button {
+  transition:
+    left .16s ease,
+    top .16s ease,
+    transform .12s ease,
+    box-shadow .12s ease;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+.revive-button.moving {
+  transform: scale(.88);
+  box-shadow:
+    0 0 0 16px rgba(127,159,190,.3),
+    0 18px 32px rgba(45,66,88,.3);
+}
+
+.revive-button.hidden {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+@media (max-width: 620px) {
+  .beaker.flask-main {
+    width: 205px;
+    height: 220px;
+  }
+
+  .pouring-potion {
+    left: calc(50% + 45px);
+  }
+
+  .explosion {
+    bottom: 82px;
+  }
+}

@@ -674,3 +674,16 @@ Por ejemplo, para permitir cinco intentos:
 ## Botón de confirmación
 
 El botón para confirmar una respuesta ahora permanece fijo en la parte inferior del panel. El contenido de la pregunta puede desplazarse sin que el botón quede fuera de la pantalla.
+
+
+---
+
+## Mejoras visuales y de reanimación
+
+- El botón de reanimación ya no desaparece. Cambia de posición con una transición visible.
+- Los intervalos mantienen un mínimo para evitar movimientos imposibles de reconocer.
+- El vaso central fue reemplazado visualmente por un matraz.
+- El chorro de la poción cae verticalmente hacia el matraz.
+- Cada respuesta correcta añade una mayor cantidad de líquido.
+- Una respuesta incorrecta también vierte una poción roja inestable antes de la explosión.
+- La explosión utiliza un destello, anillo expansivo, partículas y una vibración más intensa.
