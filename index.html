@@ -63,6 +63,14 @@
           </div>
         </div>
 
+        <div id="timer-hud" class="hud-timer" aria-live="polite">
+          <span class="hud-label">Tiempo de reacción</span>
+          <strong id="question-timer">10.0 s</strong>
+          <div class="timer-track" aria-hidden="true">
+            <div id="question-timer-bar" class="timer-bar"></div>
+          </div>
+        </div>
+
         <div class="hud-stat">
           <span>🧪</span>
           <strong id="potion-count">0</strong>
@@ -84,10 +92,7 @@
           <div id="question-panel" class="question-panel">
             <div class="question-heading">
               <span id="question-type-badge" class="badge">Sección</span>
-              <div class="question-status">
-                <span id="question-timer" class="question-timer">10.0 s</span>
-                <span id="question-level" class="level">Nivel 1</span>
-              </div>
+              <span id="question-level" class="level">Nivel 1</span>
             </div>
             <h2 id="question-text">Pregunta</h2>
             <div id="question-component"></div>

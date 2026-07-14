@@ -1838,3 +1838,118 @@ button { cursor: pointer; }
   from { transform: scale(1); }
   to { transform: scale(1.035); }
 }
+
+
+/* CRONÓMETRO FIJO EN EL HUD */
+.hud {
+  grid-template-columns:
+    minmax(120px,.65fr)
+    minmax(150px,1.1fr)
+    minmax(150px,1.1fr)
+    minmax(180px,.9fr)
+    auto
+    auto;
+}
+
+.hud-timer {
+  min-width: 180px;
+  padding: 9px 12px;
+  border: 2px solid rgba(62,88,114,.28);
+  border-radius: 15px;
+  background: rgba(255,255,255,.98);
+  box-shadow: 0 8px 18px rgba(45,66,88,.15);
+}
+
+.hud-timer strong {
+  display: block;
+  margin-top: 2px;
+  color: var(--ink-dark);
+  font-size: 1.28rem;
+  font-weight: 950;
+  font-variant-numeric: tabular-nums;
+}
+
+.timer-track {
+  height: 8px;
+  margin-top: 7px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(62,88,114,.14);
+}
+
+.timer-bar {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--blue);
+  transition: width .05s linear;
+}
+
+.hud-timer.warning {
+  border-color: #d59034;
+  background: #ffedc4;
+  animation: timerHudWarning .65s ease-in-out infinite alternate;
+}
+
+.hud-timer.warning .timer-bar {
+  background: #dc922e;
+}
+
+.hud-timer.danger {
+  border-color: #922e2e;
+  background: linear-gradient(100deg, #963232, #e26949);
+  animation: timerHudDanger .3s ease-in-out infinite alternate;
+}
+
+.hud-timer.danger .hud-label,
+.hud-timer.danger strong {
+  color: white;
+}
+
+.hud-timer.danger .timer-track {
+  background: rgba(255,255,255,.25);
+}
+
+.hud-timer.danger .timer-bar {
+  background: #fff1a8;
+}
+
+@keyframes timerHudWarning {
+  from { transform: scale(1); }
+  to { transform: scale(1.025); }
+}
+
+@keyframes timerHudDanger {
+  from {
+    transform: scale(1);
+    box-shadow: 0 8px 18px rgba(150,50,50,.25);
+  }
+  to {
+    transform: scale(1.045);
+    box-shadow: 0 0 25px rgba(225,75,50,.8);
+  }
+}
+
+@media (max-width: 900px) {
+  .hud {
+    grid-template-columns: 1fr 1fr auto auto;
+  }
+
+  .hud > :first-child,
+  .hud-timer {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 620px) {
+  .hud-timer {
+    order: -1;
+    grid-column: 1 / -1;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .hud-timer strong {
+    font-size: 1.2rem;
+  }
+}

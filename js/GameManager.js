@@ -21,6 +21,8 @@ export class GameManager {
     this.destroyed = false;
 
     this.questionTimerInterval = null;
+    this.questionOverflowTimeout = null;
+    this.questionExplosionTimeout = null;
     this.questionTimerStartedAt = null;
     this.questionTimedOut = false;
     this.overflowStarted = false;
@@ -151,10 +153,7 @@ export class GameManager {
     this.questionPanel.innerHTML = `
       <div class="question-heading">
         <span id="question-type-badge" class="badge">Sección</span>
-        <div class="question-status">
-          <span id="question-timer" class="question-timer">10.0 s</span>
-          <span id="question-level" class="level">Nivel 1</span>
-        </div>
+        <span id="question-level" class="level">Nivel 1</span>
       </div>
       <h2 id="question-text">Pregunta</h2>
       <div id="question-component"></div>
@@ -183,6 +182,7 @@ export class GameManager {
 
     this.questionTimedOut = false;
     this.overflowStarted = false;
+    this.questionTimerStartedAt = Date.now();
 
     const normalSeconds = Math.max(
       1,
@@ -195,59 +195,76 @@ export class GameManager {
 
     const normalMs = normalSeconds * 1000;
     const totalMs = (normalSeconds + dangerSeconds) * 1000;
-    const startedAt = Date.now();
 
-    const updateTimer = () => {
-      if (this.destroyed || this.questionTimedOut) {
-        this.stopQuestionTimer();
-        return;
-      }
+    const timer = document.querySelector("#question-timer");
+    const timerBar = document.querySelector("#question-timer-bar");
+    const timerHud = document.querySelector("#timer-hud");
 
-      /*
-       * No se detiene por this.busy. El intervalo se cancela
-       * explícitamente cuando se confirma una respuesta.
-       */
-      const elapsed = Date.now() - startedAt;
-      const timer = document.querySelector("#question-timer");
+    const paint = () => {
+      if (this.destroyed || this.questionTimedOut) return;
+
+      const elapsed = Date.now() - this.questionTimerStartedAt;
+      const remainingTotal = Math.max(0, totalMs - elapsed);
 
       if (elapsed < normalMs) {
-        const remaining = Math.max(0, normalMs - elapsed);
-
-        if (timer) {
-          timer.textContent = `${(remaining / 1000).toFixed(1)} s`;
-          timer.className = "question-timer";
-
-          if (remaining <= 3000) {
-            timer.classList.add("warning");
-          }
-        }
-      } else if (elapsed < totalMs) {
-        if (!this.overflowStarted) {
-          this.overflowStarted = true;
-          this.potions.beginOverflow();
-          this.questionPanel.classList.add("time-danger");
-        }
-
-        const dangerRemaining = Math.max(0, totalMs - elapsed);
+        const remainingNormal = Math.max(0, normalMs - elapsed);
 
         if (timer) {
           timer.textContent =
-            `¡REBALSE! ${(dangerRemaining / 1000).toFixed(1)} s`;
-          timer.className = "question-timer danger";
+            `${(remainingNormal / 1000).toFixed(1)} s`;
+        }
+
+        timerHud?.classList.remove("warning", "danger");
+
+        if (remainingNormal <= 3000) {
+          timerHud?.classList.add("warning");
         }
       } else {
-        this.stopQuestionTimer();
-        void this.handleQuestionTimeout();
+        const remainingDanger = Math.max(0, totalMs - elapsed);
+
+        if (timer) {
+          timer.textContent =
+            `¡REBALSE! ${(remainingDanger / 1000).toFixed(1)} s`;
+        }
+
+        timerHud?.classList.remove("warning");
+        timerHud?.classList.add("danger");
+      }
+
+      if (timerBar) {
+        timerBar.style.width =
+          `${Math.max(0, (remainingTotal / totalMs) * 100)}%`;
       }
     };
 
-    // Mostrar el valor inmediatamente, sin esperar el primer intervalo.
-    updateTimer();
+    if (timer) timer.textContent = `${normalSeconds.toFixed(1)} s`;
+    if (timerBar) timerBar.style.width = "100%";
+    timerHud?.classList.remove("warning", "danger");
 
-    this.questionTimerInterval = window.setInterval(
-      updateTimer,
-      100
-    );
+    paint();
+    this.questionTimerInterval = window.setInterval(paint, 50);
+
+    // Rebalse garantizado al segundo 10.
+    this.questionOverflowTimeout = window.setTimeout(() => {
+      if (this.destroyed || this.questionTimedOut) return;
+
+      this.overflowStarted = true;
+      this.potions.beginOverflow();
+      this.questionPanel.classList.add("time-danger");
+      timerHud?.classList.remove("warning");
+      timerHud?.classList.add("danger");
+
+      if (timer) {
+        timer.textContent =
+          `¡REBALSE! ${dangerSeconds.toFixed(1)} s`;
+      }
+    }, normalMs);
+
+    // Explosión garantizada al segundo 13.
+    this.questionExplosionTimeout = window.setTimeout(() => {
+      if (this.destroyed || this.questionTimedOut) return;
+      void this.handleQuestionTimeout();
+    }, totalMs);
   }
 
   stopQuestionTimer() {
@@ -256,11 +273,24 @@ export class GameManager {
       this.questionTimerInterval = null;
     }
 
+    if (this.questionOverflowTimeout !== null) {
+      window.clearTimeout(this.questionOverflowTimeout);
+      this.questionOverflowTimeout = null;
+    }
+
+    if (this.questionExplosionTimeout !== null) {
+      window.clearTimeout(this.questionExplosionTimeout);
+      this.questionExplosionTimeout = null;
+    }
+
     this.questionPanel?.classList.remove("time-danger");
+
+    const timerHud = document.querySelector("#timer-hud");
+    timerHud?.classList.remove("warning", "danger");
   }
 
   async handleQuestionTimeout() {
-    if (this.busy || this.destroyed || this.questionTimedOut) return;
+    if (this.destroyed || this.questionTimedOut) return;
 
     this.questionTimedOut = true;
     this.stopQuestionTimer();
