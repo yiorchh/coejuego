@@ -726,3 +726,45 @@ left: calc(50% - 6px);
 ```
 
 Como el matraz también está centrado con `left: 50%`, ambos comparten exactamente el mismo eje vertical. La botella puede permanecer inclinada a un costado sin desplazar el chorro.
+
+
+---
+
+## Temporizador y rebalse
+
+Cada pregunta tiene dos etapas:
+
+1. **10 segundos para responder.**
+2. **3 segundos de peligro**, durante los cuales el líquido sube, se rebalsa y el temporizador muestra `¡REBALSE!`.
+
+Si llegan los 13 segundos:
+
+- se bloquea la pregunta;
+- el derrame se intensifica;
+- ocurre una explosión;
+- el usuario pierde la misma vida que al responder incorrectamente;
+- el nivel y color del líquido vuelven al estado que tenían antes del rebalse;
+- el juego avanza a la siguiente pregunta.
+
+Si el usuario responde antes de la explosión, el rebalse se cancela y el líquido vuelve al nivel anterior antes de procesar la respuesta.
+
+Los tiempos pueden cambiarse en `data/questions.json`:
+
+```json
+"questionAnswerSeconds": 10,
+"overflowDangerSeconds": 3
+```
+
+
+---
+
+## Corrección del cronómetro
+
+El temporizador ahora utiliza `setInterval()` cada 100 milisegundos. Esto resulta más estable en GitHub Pages, celulares y pestañas con distintas tasas de refresco.
+
+- De 10 a 3 segundos: estado normal.
+- Últimos 3 segundos normales: advertencia amarilla.
+- Desde el segundo 10 al 13: fase roja de rebalse.
+- Al llegar al segundo 13: explosión y pérdida de vida.
+
+También se añadió `assets/favicon.svg`, que es el ícono mostrado en la pestaña del navegador.

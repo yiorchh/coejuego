@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#46627f">
   <title>APA-9000 · Laboratorio académico</title>
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./css/styles.css">
 </head>
 <body>
@@ -83,7 +84,10 @@
           <div id="question-panel" class="question-panel">
             <div class="question-heading">
               <span id="question-type-badge" class="badge">Sección</span>
-              <span id="question-level" class="level">Nivel 1</span>
+              <div class="question-status">
+                <span id="question-timer" class="question-timer">10.0 s</span>
+                <span id="question-level" class="level">Nivel 1</span>
+              </div>
             </div>
             <h2 id="question-text">Pregunta</h2>
             <div id="question-component"></div>
@@ -111,6 +115,13 @@
                 <div class="liquid-bubbles"></div>
               </div>
               <div class="beaker-label">MATRAZ APA-9000</div>
+            </div>
+
+            <div id="overflow-spill" class="overflow-spill" aria-hidden="true">
+              <span class="spill-left"></span>
+              <span class="spill-center"></span>
+              <span class="spill-right"></span>
+              <span class="spill-puddle"></span>
             </div>
 
             <div id="explosion" class="explosion" aria-hidden="true">

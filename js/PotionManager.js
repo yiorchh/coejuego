@@ -16,6 +16,10 @@ export class PotionManager {
     this.maxPotions = Math.max(1, maxPotions);
     this.count = 0;
     this.currentColor = null;
+    this.overflowSnapshot = null;
+    this.overflowActive = false;
+    this.beakerElement = this.liquidElement.closest(".beaker");
+    this.spillElement = document.querySelector("#overflow-spill");
   }
 
   reset() {
@@ -24,6 +28,7 @@ export class PotionManager {
     this.countElement.textContent = "0";
     this.liquidElement.style.height = "0%";
     this.liquidElement.style.backgroundColor = "rgb(127,159,190)";
+    this.resetOverflow({ immediate: true });
   }
 
   randomColor() {
@@ -69,7 +74,83 @@ export class PotionManager {
     this.bottleElement.classList.remove("active", "unstable");
   }
 
+  beginOverflow() {
+    if (this.overflowActive) return;
+
+    this.overflowActive = true;
+    this.overflowSnapshot = {
+      height: this.liquidElement.style.height || "0%",
+      color:
+        this.liquidElement.style.backgroundColor ||
+        "rgb(127,159,190)"
+    };
+
+    if (this.spillElement) {
+      this.spillElement.style.setProperty(
+        "--spill-color",
+        this.overflowSnapshot.color
+      );
+      this.spillElement.classList.add("active");
+    }
+
+    this.beakerElement?.classList.add("overflow-warning");
+
+    // Sube desde el nivel actual hasta sobrepasar la boca en 3 segundos.
+    this.liquidElement.style.setProperty(
+      "transition",
+      "height 3s linear, background-color .4s ease"
+    );
+    this.liquidElement.style.height = "116%";
+  }
+
+  resetOverflow({ immediate = false } = {}) {
+    if (!this.overflowSnapshot && !this.overflowActive) {
+      this.beakerElement?.classList.remove("overflow-warning");
+      this.spillElement?.classList.remove("active", "burst");
+      return;
+    }
+
+    const snapshot = this.overflowSnapshot ?? {
+      height: this.liquidElement.style.height || "0%",
+      color:
+        this.liquidElement.style.backgroundColor ||
+        "rgb(127,159,190)"
+    };
+
+    if (immediate) {
+      this.liquidElement.style.setProperty("transition", "none");
+    } else {
+      this.liquidElement.style.setProperty(
+        "transition",
+        "height .48s ease, background-color .35s ease"
+      );
+    }
+
+    this.liquidElement.style.height = snapshot.height;
+    this.liquidElement.style.backgroundColor = snapshot.color;
+
+    this.beakerElement?.classList.remove("overflow-warning");
+    this.spillElement?.classList.remove("active", "burst");
+
+    this.overflowActive = false;
+    this.overflowSnapshot = null;
+
+    if (immediate) {
+      void this.liquidElement.offsetWidth;
+      this.liquidElement.style.removeProperty("transition");
+    }
+  }
+
+  burstOverflow() {
+    this.spillElement?.classList.add("burst");
+    this.beakerElement?.classList.add("overflow-burst");
+    setTimeout(() => {
+      this.beakerElement?.classList.remove("overflow-burst");
+    }, 1050);
+  }
+
   async pour() {
+    this.resetOverflow();
     const incoming = this.randomColor();
     const mixed = this.mixColors(this.currentColor, incoming);
 
@@ -94,6 +175,7 @@ export class PotionManager {
   }
 
   async pourUnstable() {
+    this.resetOverflow();
     // Una poción incorrecta también se vierte antes de explotar.
     const dangerousColor = [232, 72, 72];
     await this.animatePour({

@@ -20,6 +20,11 @@ export class GameManager {
     this.busy = false;
     this.destroyed = false;
 
+    this.questionTimerInterval = null;
+    this.questionTimerStartedAt = null;
+    this.questionTimedOut = false;
+    this.overflowStarted = false;
+
     this.totalQuestions = laboratories.reduce(
       (sum, laboratory) => sum + laboratory.questions.length,
       0
@@ -146,7 +151,10 @@ export class GameManager {
     this.questionPanel.innerHTML = `
       <div class="question-heading">
         <span id="question-type-badge" class="badge">Sección</span>
-        <span id="question-level" class="level">Nivel 1</span>
+        <div class="question-status">
+          <span id="question-timer" class="question-timer">10.0 s</span>
+          <span id="question-level" class="level">Nivel 1</span>
+        </div>
       </div>
       <h2 id="question-text">Pregunta</h2>
       <div id="question-component"></div>
@@ -167,11 +175,134 @@ export class GameManager {
 
     this.questionPanel.classList.remove("reaction-active");
     this.questionManager.render(this.currentQuestion);
+    this.startQuestionTimer();
+  }
+
+  startQuestionTimer() {
+    this.stopQuestionTimer();
+
+    this.questionTimedOut = false;
+    this.overflowStarted = false;
+
+    const normalSeconds = Math.max(
+      1,
+      Number(this.config.questionAnswerSeconds ?? 10)
+    );
+    const dangerSeconds = Math.max(
+      1,
+      Number(this.config.overflowDangerSeconds ?? 3)
+    );
+
+    const normalMs = normalSeconds * 1000;
+    const totalMs = (normalSeconds + dangerSeconds) * 1000;
+    const startedAt = Date.now();
+
+    const updateTimer = () => {
+      if (this.destroyed || this.questionTimedOut) {
+        this.stopQuestionTimer();
+        return;
+      }
+
+      /*
+       * No se detiene por this.busy. El intervalo se cancela
+       * explícitamente cuando se confirma una respuesta.
+       */
+      const elapsed = Date.now() - startedAt;
+      const timer = document.querySelector("#question-timer");
+
+      if (elapsed < normalMs) {
+        const remaining = Math.max(0, normalMs - elapsed);
+
+        if (timer) {
+          timer.textContent = `${(remaining / 1000).toFixed(1)} s`;
+          timer.className = "question-timer";
+
+          if (remaining <= 3000) {
+            timer.classList.add("warning");
+          }
+        }
+      } else if (elapsed < totalMs) {
+        if (!this.overflowStarted) {
+          this.overflowStarted = true;
+          this.potions.beginOverflow();
+          this.questionPanel.classList.add("time-danger");
+        }
+
+        const dangerRemaining = Math.max(0, totalMs - elapsed);
+
+        if (timer) {
+          timer.textContent =
+            `¡REBALSE! ${(dangerRemaining / 1000).toFixed(1)} s`;
+          timer.className = "question-timer danger";
+        }
+      } else {
+        this.stopQuestionTimer();
+        void this.handleQuestionTimeout();
+      }
+    };
+
+    // Mostrar el valor inmediatamente, sin esperar el primer intervalo.
+    updateTimer();
+
+    this.questionTimerInterval = window.setInterval(
+      updateTimer,
+      100
+    );
+  }
+
+  stopQuestionTimer() {
+    if (this.questionTimerInterval !== null) {
+      window.clearInterval(this.questionTimerInterval);
+      this.questionTimerInterval = null;
+    }
+
+    this.questionPanel?.classList.remove("time-danger");
+  }
+
+  async handleQuestionTimeout() {
+    if (this.busy || this.destroyed || this.questionTimedOut) return;
+
+    this.questionTimedOut = true;
+    this.stopQuestionTimer();
+    this.busy = true;
+    this.questionManager.lock();
+    this.questionPanel.classList.add("reaction-active");
+
+    const feedback = document.querySelector("#feedback");
+    if (feedback) {
+      feedback.textContent =
+        "El tiempo se agotó: la solución se rebalsó y la reacción explotó.";
+      feedback.className = "feedback wrong";
+    }
+
+    this.audio.wrong();
+    this.potions.burstOverflow();
+    this.animations.explode();
+    this.health.hit();
+
+    await new Promise(resolve => setTimeout(resolve, 1250));
+    this.potions.resetOverflow();
+
+    if (this.health.health === 0) {
+      this.questionPanel.classList.remove("reaction-active");
+      this.busy = false;
+      return;
+    }
+
+    this.questionIndex += 1;
+    this.updateProgress();
+    await new Promise(resolve => setTimeout(resolve, 450));
+
+    this.questionPanel.classList.remove("reaction-active");
+    this.busy = false;
+    this.showQuestion();
   }
 
   async handleAnswer(result) {
-    if (this.busy || this.destroyed) return;
+    if (this.busy || this.destroyed || this.questionTimedOut) return;
 
+    this.stopQuestionTimer();
+    this.potions.resetOverflow();
     this.busy = true;
     this.questionManager.lock();
     this.questionPanel.classList.add("reaction-active");
@@ -268,6 +399,8 @@ export class GameManager {
 
   finish(victory) {
     if (this.destroyed) return;
+    this.stopQuestionTimer();
+    this.potions.resetOverflow({ immediate: true });
 
     const elapsed = performance.now() - this.startedAt;
     const bonus = victory
@@ -292,6 +425,8 @@ export class GameManager {
   }
 
   destroy() {
+    this.stopQuestionTimer();
+    this.potions.resetOverflow({ immediate: true });
     this.destroyed = true;
   }
 }

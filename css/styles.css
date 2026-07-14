@@ -1576,3 +1576,265 @@ button { cursor: pointer; }
     height: 60px;
   }
 }
+
+
+/* ==================================================================
+   TEMPORIZADOR DE PREGUNTA Y REBALSE DEL MATRAZ
+   ================================================================== */
+
+.question-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.question-timer {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 76px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(62,88,114,.22);
+  background: rgba(255,255,255,.88);
+  color: var(--ink-dark);
+  font-size: .78rem;
+  font-weight: 950;
+  font-variant-numeric: tabular-nums;
+  box-shadow: 0 5px 12px rgba(45,66,88,.09);
+}
+
+.question-timer.danger {
+  min-width: 132px;
+  color: white;
+  border-color: rgba(179,79,79,.65);
+  background: linear-gradient(90deg, #a83e3e, #dd714d);
+  animation: timerDangerPulse .42s ease-in-out infinite alternate;
+}
+
+.question-panel.time-danger {
+  border-color: rgba(190,62,62,.7);
+  box-shadow:
+    0 0 0 5px rgba(190,62,62,.12),
+    var(--shadow);
+}
+
+@keyframes timerDangerPulse {
+  from { transform: scale(1); }
+  to { transform: scale(1.055); }
+}
+
+/* El líquido sube rápidamente durante los tres segundos de peligro. */
+.beaker.flask-main.overflow-warning {
+  animation: flaskPressure .32s ease-in-out infinite alternate;
+  filter:
+    drop-shadow(0 28px 28px rgba(24,42,58,.42))
+    drop-shadow(0 0 13px rgba(213,67,55,.82));
+}
+
+.beaker.flask-main.overflow-warning .liquid-wave {
+  animation:
+    overflowWave .32s ease-in-out infinite alternate,
+    wave 1.1s ease-in-out infinite;
+}
+
+.beaker.flask-main.overflow-burst {
+  animation: flaskBurst .8s ease-out;
+}
+
+@keyframes flaskPressure {
+  from { transform: translateX(-50%) scale(1); }
+  to { transform: translateX(-50%) scale(1.018); }
+}
+
+@keyframes overflowWave {
+  from { transform: translateX(-5%) scaleY(.8); }
+  to { transform: translateX(5%) scaleY(1.35); }
+}
+
+@keyframes flaskBurst {
+  0%,100% { transform: translateX(-50%) scale(1); }
+  18% { transform: translateX(-50%) scale(1.06) rotate(-1deg); }
+  38% { transform: translateX(-50%) scale(.98) rotate(1deg); }
+  62% { transform: translateX(-50%) scale(1.04) rotate(-.6deg); }
+}
+
+/*
+  Derrame exterior. Está separado del matraz para que pueda verse
+  aunque el recipiente utilice clip-path y overflow hidden.
+*/
+.overflow-spill {
+  --spill-color: rgb(127,159,190);
+  position: absolute;
+  z-index: 11;
+  left: 50%;
+  top: -2px;
+  width: 470px;
+  height: 470px;
+  transform: translateX(-50%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.overflow-spill.active {
+  opacity: 1;
+}
+
+.overflow-spill span {
+  position: absolute;
+  display: block;
+  background: var(--spill-color);
+  box-shadow:
+    inset 0 3px 5px rgba(255,255,255,.38),
+    0 0 10px color-mix(in srgb, var(--spill-color) 72%, white);
+}
+
+.spill-center {
+  left: calc(50% - 10px);
+  top: 79px;
+  width: 20px;
+  height: 0;
+  border-radius: 0 0 999px 999px;
+}
+
+.overflow-spill.active .spill-center {
+  animation: centerOverflow 2.6s .35s linear forwards;
+}
+
+.spill-left,
+.spill-right {
+  top: 91px;
+  width: 15px;
+  height: 0;
+  border-radius: 999px;
+}
+
+.spill-left {
+  left: calc(50% - 39px);
+  transform: rotate(9deg);
+}
+
+.spill-right {
+  left: calc(50% + 24px);
+  transform: rotate(-9deg);
+}
+
+.overflow-spill.active .spill-left {
+  animation: sideOverflow 2.15s .7s linear forwards;
+}
+
+.overflow-spill.active .spill-right {
+  animation: sideOverflow 1.9s 1s linear forwards;
+}
+
+.spill-puddle {
+  left: 50%;
+  bottom: 2px;
+  width: 0;
+  height: 22px;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  opacity: .78;
+}
+
+.overflow-spill.active .spill-puddle {
+  animation: puddleGrow 2.2s .8s ease-out forwards;
+}
+
+.overflow-spill.burst .spill-center,
+.overflow-spill.burst .spill-left,
+.overflow-spill.burst .spill-right {
+  animation: spillBurst .55s ease-out forwards !important;
+}
+
+.overflow-spill.burst .spill-puddle {
+  animation: puddleBurst .65s ease-out forwards !important;
+}
+
+@keyframes centerOverflow {
+  0% { height: 0; opacity: 0; }
+  15% { opacity: 1; }
+  100% { height: 310px; opacity: .96; }
+}
+
+@keyframes sideOverflow {
+  0% { height: 0; opacity: 0; }
+  18% { opacity: .92; }
+  100% { height: 245px; opacity: .86; }
+}
+
+@keyframes puddleGrow {
+  0% { width: 0; opacity: 0; }
+  100% { width: 360px; opacity: .72; }
+}
+
+@keyframes spillBurst {
+  0% { height: 220px; opacity: 1; transform: scaleX(1); }
+  100% { height: 390px; opacity: 0; transform: scaleX(2.7); }
+}
+
+@keyframes puddleBurst {
+  0% { width: 300px; height: 22px; opacity: .8; }
+  100% { width: 520px; height: 55px; opacity: 0; }
+}
+
+@media (max-width: 760px) {
+  .question-status {
+    gap: 5px;
+  }
+
+  .question-timer {
+    min-width: 67px;
+    padding: 5px 8px;
+    font-size: .69rem;
+  }
+
+  .question-timer.danger {
+    min-width: 113px;
+  }
+
+  .overflow-spill {
+    width: min(390px, 96vw);
+    height: 415px;
+  }
+
+  .spill-center {
+    top: 70px;
+  }
+
+  .spill-left,
+  .spill-right {
+    top: 82px;
+  }
+
+  @keyframes centerOverflow {
+    0% { height: 0; opacity: 0; }
+    15% { opacity: 1; }
+    100% { height: 270px; opacity: .96; }
+  }
+
+  @keyframes sideOverflow {
+    0% { height: 0; opacity: 0; }
+    18% { opacity: .92; }
+    100% { height: 210px; opacity: .86; }
+  }
+
+  @keyframes puddleGrow {
+    0% { width: 0; opacity: 0; }
+    100% { width: min(310px, 82vw); opacity: .72; }
+  }
+}
+
+
+/* Cronómetro corregido */
+.question-timer.warning {
+  color: #8b4b17;
+  border-color: rgba(224,155,105,.8);
+  background: rgba(255,229,190,.95);
+  animation: timerWarningPulse .75s ease-in-out infinite alternate;
+}
+
+@keyframes timerWarningPulse {
+  from { transform: scale(1); }
+  to { transform: scale(1.035); }
+}

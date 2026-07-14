@@ -21,7 +21,9 @@
       "blinkSpeedIncreasePerLaboratory": 0.08,
       "minimumDurationMs": 5250,
       "minimumBlinkIntervalMs": 520
-    }
+    },
+    "questionAnswerSeconds": 10,
+    "overflowDangerSeconds": 3
   },
   "laboratories": [
     {
