@@ -4,7 +4,19 @@ import { GameManager } from "./GameManager.js";
 const DISCORD_WEBHOOK_URL =
   "https://discord.com/api/webhooks/1526038157135577260/VgoeWLGXMo4vS3o2kh-cEcHSfTRN9rKDcxblAeZE7RDjocRO-qUy416H2zYjB3d05TcK";
 
+const GOOGLE_SHEETS_WEB_APP_URL =
+  "https://script.google.com/macros/s/AKfycbwOlIdjQMwcQ_7acGUADx6H6ERXbKNVi06IxDvAvKqx3GgQLfiZJtrAq4IspYx5WMta/exec";
+
 document.addEventListener("DOMContentLoaded", initializeApp, { once: true });
+
+let gameStartedForUnloadGuard = false;
+let gameFinishedForUnloadGuard = false;
+
+window.addEventListener("beforeunload", event => {
+  if (!gameStartedForUnloadGuard || gameFinishedForUnloadGuard) return;
+  event.preventDefault();
+  event.returnValue = "";
+});
 
 async function initializeApp() {
   const elements = {
@@ -36,7 +48,8 @@ async function initializeApp() {
   let campaignLaboratories = [];
   let game = null;
   let gameFinished = false;
-  let resultSent = false;
+  let discordResultSent = false;
+  let sheetsResultSent = false;
 
   function showScreen(id) {
     document.querySelectorAll(".screen").forEach(screen => {
@@ -79,8 +92,8 @@ async function initializeApp() {
   }
 
   async function sendResultToDiscord(result) {
-    if (resultSent) return;
-    resultSent = true;
+    if (discordResultSent) return;
+    discordResultSent = true;
 
     const safeName = String(result.user || "Usuario sin nombre")
       .trim()
@@ -150,6 +163,61 @@ async function initializeApp() {
     }
   }
 
+  async function sendResultToGoogleSheets(result) {
+    if (sheetsResultSent) return;
+    sheetsResultSent = true;
+
+    const params = new URLSearchParams({
+      nombre: String(result.user || "Usuario sin nombre")
+        .trim()
+        .slice(0, 100),
+      puntaje: String(Math.max(0, Math.round(result.score))),
+      aciertos: String(Math.max(0, Math.round(result.correct))),
+      total: String(Math.max(1, Math.round(result.total))),
+      tiempoSegundos: String(
+        Math.max(1, Math.round(result.elapsedSeconds))
+      ),
+      tiempoTexto: String(result.time || "0:00"),
+      victoria: String(Boolean(result.victory)),
+      laboratorios: String(
+        Math.max(0, Math.round(result.laboratoriesCompleted))
+      ),
+      vida: String(
+        Math.max(0, Math.round(result.remainingHealth ?? 0))
+      ),
+      reviviresRestantes: String(
+        Math.max(0, Math.round(result.remainingRevives ?? 0))
+      ),
+      ultimoLaboratorio: String(
+        result.currentLaboratory || "Campaña"
+      ).slice(0, 100)
+    });
+
+    try {
+      /*
+       * no-cors permite enviar desde GitHub Pages a Apps Script.
+       * La respuesta es opaca, por lo que el navegador no puede
+       * confirmar su contenido, pero el POST sí se ejecuta.
+       */
+      await fetch(GOOGLE_SHEETS_WEB_APP_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: params.toString(),
+        keepalive: true
+      });
+
+      console.info("Resultado enviado a Google Sheets.");
+    } catch (error) {
+      console.error(
+        "No se pudo enviar el resultado a Google Sheets:",
+        error
+      );
+    }
+  }
+
   userInput.addEventListener("input", updateStartState);
 
   startButton.addEventListener("click", () => {
@@ -164,6 +232,8 @@ async function initializeApp() {
 
     startButton.disabled = true;
     userInput.disabled = true;
+    gameStartedForUnloadGuard = true;
+    gameFinishedForUnloadGuard = false;
 
     game = new GameManager({
       config: data.config,
@@ -171,6 +241,7 @@ async function initializeApp() {
       userName,
       onFinish: async result => {
         gameFinished = true;
+        gameFinishedForUnloadGuard = true;
         restartButton.hidden = true;
         startButton.disabled = true;
         userInput.disabled = true;
@@ -188,7 +259,10 @@ async function initializeApp() {
           ? `Completaste los ${result.laboratoriesCompleted} laboratorios sin restaurar la vida entre experimentos.`
           : `La reacción se perdió en ${result.currentLaboratory}. Para volver a jugar, recarga la página.`;
 
-        await sendResultToDiscord(result);
+        await Promise.allSettled([
+          sendResultToGoogleSheets(result),
+          sendResultToDiscord(result)
+        ]);
       }
     });
 

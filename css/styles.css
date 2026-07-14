@@ -1953,3 +1953,417 @@ button { cursor: pointer; }
     font-size: 1.2rem;
   }
 }
+
+
+/* ==================================================================
+   MODO MÓVIL COMPACTO
+   ================================================================== */
+
+html,
+body {
+  overscroll-behavior-y: none;
+  touch-action: manipulation;
+}
+
+body {
+  -webkit-text-size-adjust: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  touch-action: manipulation;
+}
+
+/* Evita el zoom automático de iOS al enfocar inputs */
+@media (max-width: 760px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 760px) {
+  :root {
+    --mobile-gap: 7px;
+  }
+
+  body {
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+
+  .screen {
+    min-height: 100dvh;
+    padding: 8px;
+  }
+
+  .panel {
+    width: 100%;
+    border-radius: 18px;
+    padding: 16px 14px;
+    box-shadow: 0 12px 34px rgba(45,66,88,.16);
+  }
+
+  .hero-panel h1,
+  .result-panel h1 {
+    margin: 4px 0 8px;
+    font-size: clamp(2.25rem, 12vw, 4rem);
+    line-height: .92;
+  }
+
+  .eyebrow {
+    font-size: .63rem;
+    letter-spacing: .1em;
+  }
+
+  .lead {
+    margin: 8px 0;
+    font-size: .92rem;
+    line-height: 1.35;
+  }
+
+  .field {
+    gap: 5px;
+    margin: 12px 0;
+    font-size: .86rem;
+  }
+
+  .field input {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
+    border-radius: 11px;
+  }
+
+  .campaign-label {
+    margin: 14px 0 5px;
+    font-size: .64rem;
+  }
+
+  .campaign-route {
+    gap: 7px;
+    margin: 8px 0 12px;
+    padding-bottom: 4px;
+  }
+
+  .campaign-card {
+    min-width: 150px;
+    padding: 10px;
+    border-radius: 13px;
+    gap: 8px;
+  }
+
+  .campaign-card strong {
+    font-size: .85rem;
+  }
+
+  .campaign-card small {
+    font-size: .68rem;
+    line-height: 1.2;
+  }
+
+  .campaign-number {
+    flex-basis: 30px;
+    height: 30px;
+    font-size: .78rem;
+  }
+
+  .campaign-connector {
+    flex-basis: 16px;
+    font-size: 1rem;
+  }
+
+  .primary-button,
+  .submit-answer {
+    min-height: 44px;
+    padding: 10px 14px;
+    border-radius: 11px;
+    font-size: .9rem;
+  }
+
+  .status-message {
+    margin: 8px 0 0;
+    font-size: .78rem;
+  }
+
+  /* HUD más bajo y compacto */
+  .hud {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    grid-template-columns: 1fr 1fr auto auto;
+    gap: 5px;
+    padding: 6px 7px;
+    max-height: 146px;
+  }
+
+  .hud > :first-child {
+    display: none;
+  }
+
+  .hud-label {
+    font-size: .55rem;
+    letter-spacing: .07em;
+  }
+
+  .hud-row {
+    gap: 5px;
+  }
+
+  .hud-row strong,
+  .hud-block > strong {
+    font-size: .75rem;
+  }
+
+  .health-block,
+  .progress-block {
+    grid-column: span 2;
+  }
+
+  .meter {
+    height: 7px;
+    margin-top: 3px;
+  }
+
+  .hud-stat {
+    min-width: 43px;
+    padding: 4px 6px;
+    border-radius: 10px;
+    font-size: .72rem;
+  }
+
+  .hud-stat span {
+    font-size: .8rem;
+  }
+
+  .hud-timer {
+    order: -1;
+    grid-column: 1 / -1;
+    width: 100%;
+    min-width: 0;
+    padding: 5px 8px;
+    border-radius: 11px;
+  }
+
+  .hud-timer strong {
+    margin-top: 0;
+    font-size: .94rem;
+    line-height: 1;
+  }
+
+  .timer-track {
+    height: 5px;
+    margin-top: 4px;
+  }
+
+  /* Laboratorio y panel dentro de una pantalla */
+  .laboratory,
+  .lab-wall {
+    min-height: calc(100dvh - 126px);
+  }
+
+  .lab-wall {
+    overflow: hidden;
+  }
+
+  .lab-title {
+    top: 8px;
+    left: 10px;
+  }
+
+  .lab-title span {
+    font-size: 1.05rem;
+  }
+
+  .lab-title small {
+    font-size: .55rem;
+    letter-spacing: .06em;
+  }
+
+  .question-panel {
+    top: 53px;
+    width: calc(100% - 10px);
+    max-height: calc(100dvh - 192px);
+    padding: 12px 11px 0;
+    border-radius: 16px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .question-heading {
+    gap: 6px;
+  }
+
+  .badge,
+  .level {
+    padding: 4px 7px;
+    font-size: .6rem;
+  }
+
+  .question-panel h2 {
+    margin: 8px 0 10px;
+    font-size: 1rem;
+    line-height: 1.22;
+  }
+
+  .options-grid,
+  .order-list,
+  .match-column,
+  .match-lines {
+    gap: 6px;
+  }
+
+  .option-button,
+  .tf-button,
+  .order-item,
+  .match-item {
+    min-height: 40px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    font-size: .82rem;
+    line-height: 1.2;
+  }
+
+  .matching-grid {
+    gap: 8px;
+  }
+
+  .match-column h3 {
+    font-size: .72rem;
+  }
+
+  .match-line {
+    padding: 7px 9px;
+    border-radius: 9px;
+    font-size: .75rem;
+  }
+
+  .order-control-button {
+    width: 38px;
+    height: 38px;
+    border-radius: 9px;
+    font-size: 1.1rem;
+  }
+
+  .component-actions {
+    margin: 10px -11px 0;
+    padding: 9px 11px calc(9px + env(safe-area-inset-bottom));
+    border-radius: 0 0 15px 15px;
+  }
+
+  .submit-answer {
+    min-height: 42px;
+    font-size: .86rem;
+  }
+
+  .feedback {
+    min-height: 1.2em;
+    margin-top: 7px;
+    font-size: .78rem;
+    line-height: 1.2;
+  }
+
+  /* Equipamiento como fondo, sin ocupar área interactiva */
+  .lab-equipment {
+    height: 300px;
+    bottom: 24px;
+    transform: scale(.72);
+    transform-origin: bottom center;
+    opacity: .62;
+  }
+
+  .beaker.flask-main {
+    width: 330px;
+    height: 335px;
+  }
+
+  .lab-table {
+    height: 82px;
+  }
+
+  .shelf {
+    display: none;
+  }
+
+  /* Resultado compacto */
+  .result-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+    margin: 14px 0;
+  }
+
+  .result-grid div {
+    padding: 10px;
+    border-radius: 11px;
+  }
+
+  .result-grid span {
+    font-size: .6rem;
+  }
+
+  .result-grid strong {
+    font-size: 1rem;
+  }
+
+  /* Modal de revivir más pequeño */
+  .modal {
+    padding: 10px;
+  }
+
+  .revive-card {
+    padding: 16px 14px;
+    border-radius: 18px;
+  }
+
+  .revive-card h2 {
+    font-size: 1.6rem;
+  }
+
+  .revive-instruction {
+    margin: 9px 0 7px;
+    padding: 9px 10px;
+    font-size: .9rem;
+  }
+
+  .revive-zone {
+    height: 190px;
+    margin-top: 10px;
+  }
+
+  .revive-button {
+    width: 72px;
+    height: 72px;
+    font-size: 1.7rem;
+  }
+}
+
+/* Teléfonos muy pequeños */
+@media (max-width: 390px) {
+  .hud {
+    max-height: 138px;
+  }
+
+  .question-panel {
+    top: 49px;
+    max-height: calc(100dvh - 184px);
+  }
+
+  .question-panel h2 {
+    font-size: .93rem;
+  }
+
+  .option-button,
+  .tf-button,
+  .order-item,
+  .match-item {
+    font-size: .76rem;
+    padding: 7px 8px;
+  }
+
+  .lab-equipment {
+    transform: scale(.64);
+  }
+}

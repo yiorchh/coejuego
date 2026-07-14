@@ -768,3 +768,178 @@ El temporizador ahora utiliza `setInterval()` cada 100 milisegundos. Esto result
 - Al llegar al segundo 13: explosión y pérdida de vida.
 
 También se añadió `assets/favicon.svg`, que es el ícono mostrado en la pestaña del navegador.
+
+
+---
+
+## Integración con Google Sheets
+
+El juego envía automáticamente todos los resultados a esta aplicación web de Google Apps Script:
+
+```text
+https://script.google.com/macros/s/AKfycbwOlIdjQMwcQ_7acGUADx6H6ERXbKNVi06IxDvAvKqx3GgQLfiZJtrAq4IspYx5WMta/exec
+```
+
+El envío ocurre tanto en victoria como en derrota. Los campos enviados son:
+
+- `nombre`
+- `puntaje`
+- `aciertos`
+- `total`
+- `tiempoSegundos`
+- `tiempoTexto`
+- `victoria`
+- `laboratorios`
+- `vida`
+- `reviviresRestantes`
+- `ultimoLaboratorio`
+
+### Código recomendado para `Código.gs`
+
+```javascript
+const CONFIG = {
+  HOJA_RESULTADOS: "Resultados"
+};
+
+function doGet() {
+  return responder({
+    ok: true,
+    estado: "Receptor APA-9000 activo"
+  });
+}
+
+function doPost(e) {
+  try {
+    const datos = e.parameter || {};
+
+    const nombre = limpiarTexto(datos.nombre, 100);
+    const puntaje = Number(datos.puntaje);
+    const aciertos = Number(datos.aciertos);
+    const total = Number(datos.total);
+    const tiempoSegundos = Number(datos.tiempoSegundos);
+    const tiempoTexto = limpiarTexto(datos.tiempoTexto, 20);
+    const victoria =
+      String(datos.victoria).toLowerCase() === "true";
+    const laboratorios = Number(datos.laboratorios);
+    const vida = Number(datos.vida);
+    const reviviresRestantes =
+      Number(datos.reviviresRestantes);
+    const ultimoLaboratorio =
+      limpiarTexto(datos.ultimoLaboratorio, 100);
+
+    if (
+      nombre.length < 3 ||
+      !Number.isFinite(puntaje) ||
+      puntaje < 0 ||
+      !Number.isInteger(aciertos) ||
+      aciertos < 0 ||
+      !Number.isInteger(total) ||
+      total < 1 ||
+      aciertos > total ||
+      !Number.isInteger(tiempoSegundos) ||
+      tiempoSegundos < 1 ||
+      !Number.isInteger(laboratorios) ||
+      laboratorios < 0 ||
+      !Number.isFinite(vida) ||
+      vida < 0 ||
+      vida > 100
+    ) {
+      return responder({
+        ok: false,
+        error: "Resultado inválido."
+      });
+    }
+
+    const bloqueo = LockService.getScriptLock();
+    bloqueo.waitLock(10000);
+
+    try {
+      const hoja = SpreadsheetApp
+        .getActiveSpreadsheet()
+        .getSheetByName(CONFIG.HOJA_RESULTADOS);
+
+      if (!hoja) {
+        throw new Error(
+          'No existe la hoja "Resultados".'
+        );
+      }
+
+      hoja.appendRow([
+        new Date(),
+        nombre,
+        Math.round(puntaje),
+        aciertos,
+        total,
+        tiempoSegundos,
+        tiempoTexto,
+        victoria ? "Victoria" : "Derrota",
+        laboratorios,
+        Math.round(vida),
+        Math.max(0, Math.round(reviviresRestantes)),
+        ultimoLaboratorio
+      ]);
+    } finally {
+      bloqueo.releaseLock();
+    }
+
+    return responder({
+      ok: true,
+      mensaje: "Resultado registrado."
+    });
+  } catch (error) {
+    console.error(error);
+
+    return responder({
+      ok: false,
+      error: "No se pudo registrar el resultado."
+    });
+  }
+}
+
+function limpiarTexto(valor, maximo) {
+  let texto = String(valor || "")
+    .trim()
+    .replace(/\s+/g, " ")
+    .slice(0, maximo);
+
+  if (/^[=+\-@]/.test(texto)) {
+    texto = "'" + texto;
+  }
+
+  return texto;
+}
+
+function responder(contenido) {
+  return ContentService
+    .createTextOutput(JSON.stringify(contenido))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+```
+
+La hoja `Resultados` debe tener estos encabezados:
+
+```text
+Fecha | Nombre | Puntaje | Aciertos | Total | Tiempo segundos |
+Tiempo | Resultado | Laboratorios | Vida | Revivires restantes |
+Último laboratorio
+```
+
+Después de modificar `Código.gs`, crea una nueva versión de la implementación o actualiza la implementación existente.
+
+
+---
+
+## Modo móvil compacto
+
+Esta versión reduce el tamaño del HUD, las tarjetas, los botones y los espacios internos para disminuir el desplazamiento vertical en teléfonos.
+
+También se añadieron:
+
+- `overscroll-behavior-y: none` para reducir el gesto de recarga al arrastrar hacia abajo;
+- `touch-action: manipulation` para evitar retardos y gestos accidentales;
+- viewport con `maximum-scale=1` y `user-scalable=no`;
+- advertencia del navegador al intentar salir o recargar durante una partida activa.
+
+### Limitaciones
+
+Los navegadores móviles no permiten bloquear al 100 % el botón físico de recarga, el cierre de la pestaña o todos los gestos del sistema. La advertencia `beforeunload` tampoco aparece en todos los navegadores móviles.

@@ -447,6 +447,9 @@ export class GameManager {
       correct: this.correct,
       total: this.totalQuestions,
       time: this.formatTime(elapsed),
+      elapsedSeconds: Math.max(1, Math.round(elapsed / 1000)),
+      remainingHealth: this.health.health,
+      remainingRevives: this.revives.remaining,
       laboratoriesCompleted: victory
         ? this.laboratories.length
         : this.laboratoryIndex,
